@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-9 py-4">
+      <h5>{{item.name}} reservation history</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Action</th>
+            <th scope="col">User</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events|reverse %}
+          <tr>
+            <td>{{ momentjs(event.timestamp).calendar() }}</td>
+            <td>{{ event.action }}</td>
+            <td>{{ event.user.email }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

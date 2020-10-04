@@ -50,7 +50,7 @@
               <div class="mb-3">
                 {{ field.label(class="form-label") }} {{
                 field(class_="form-control") }} {% for error in field.errors %}
-                <span style="color: red">[{{ error }}]</span>
+                <div class="is-invalid">[{{ error }}]</div>
                 {% endfor %}
               </div>
               {% endif %} {% endfor %} {{ signup_form.hidden_tag() }} {{

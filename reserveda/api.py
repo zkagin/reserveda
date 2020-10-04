@@ -1,5 +1,5 @@
 from reserveda import db
-from reserveda.models import Group, Item, User
+from reserveda.models import Group, Item, User, Event
 from hashids import Hashids
 
 
@@ -35,21 +35,64 @@ def login(email, password):
         return None
 
 
+def get_item(item_id):
+    return Item.query.filter_by(id=item_id).first()
+
+
 def list_items(group_id):
-    return Group.query.filter_by(id=group_id).first().items
+    return Item.query.filter_by(group_id=group_id, deleted=False).all()
 
 
-def add_item(email, name):
-    user = User.query.filter_by(email=email).first()
+def add_item(user_id, name):
+    user = User.query.filter_by(id=user_id).first()
     item = Item(name=name, status=False, group_id=user.group_id)
     db.session.add(item)
+    db.session.commit()
+    event = Event(
+        action="created", item_id=item.id, user_id=user_id, group_id=user.group_id
+    )
+    db.session.add(event)
     db.session.commit()
     return item
 
 
-def toggle_item(id):
-    item = Item.query.filter_by(id=id).first()
+def check_item_access(user_id, item_id):
+    item = Item.query.filter_by(id=item_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    return item and user and item.group_id == user.group_id
+
+
+def toggle_item(user_id, item_id):
+    if not check_item_access(user_id=user_id, item_id=item_id):
+        return False
+    item = Item.query.filter_by(id=item_id).first()
     item.status = not item.status
+    action = "reserved" if item.status else "returned"
+    event = Event(
+        action=action, item_id=item_id, user_id=user_id, group_id=item.group_id
+    )
+    db.session.add(item)
+    db.session.add(event)
+    db.session.commit()
+    return True
+
+
+def delete_item(user_id, item_id):
+    if not check_item_access(user_id=user_id, item_id=item_id):
+        return False
+    item = Item.query.filter_by(id=item_id).first()
+    item.status = False
+    item.deleted = True
+    event = Event(
+        action="deleted", item_id=item.id, user_id=user_id, group_id=item.group_id
+    )
+    db.session.add(event)
     db.session.add(item)
     db.session.commit()
-    return item.status
+    return True
+
+
+def list_events(user_id, item_id):
+    if not check_item_access(user_id=user_id, item_id=item_id):
+        return False
+    return Event.query.filter_by(item_id=item_id).all()

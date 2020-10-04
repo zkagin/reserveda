@@ -14,3 +14,14 @@
 .item-reserved {
   background-color: red;
 }
+
+.item-delete {
+  cursor: pointer;
+  transition: all 0.1s ease-in;
+  font-size: larger;
+}
+
+.item-delete:hover {
+  opacity: 0.6;
+  transition: all 0.1s ease-in;
+}

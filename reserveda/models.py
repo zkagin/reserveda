@@ -30,7 +30,8 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     status = db.Column(db.Boolean, nullable=False)
-    # comment = db.Column(db.String(80), nullable=True)
+    comment = db.Column(db.String(80), nullable=True)
+    deleted = db.Column(db.Boolean, default=False, nullable=False)
     events = db.relationship("Event", backref="item", lazy=True)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
 
@@ -39,7 +40,9 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     action = db.Column(db.String(80), nullable=False)
     comment = db.Column(db.String(80), nullable=True)
+    timestamp = db.Column(
+        db.DateTime, server_default=db.func.current_timestamp(), nullable=False
+    )
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)

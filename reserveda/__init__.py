@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
 from flask_login import LoginManager
+from .momentjs import momentjs
+from reserveda import config
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "sdpifmauewf7a8efon2373"
+app.config.from_object(config)
+app.jinja_env.globals["momentjs"] = momentjs
 db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = "index"
