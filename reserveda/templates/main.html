@@ -9,22 +9,26 @@ url_for('index', _external=True, c=current_user.group.code) %}
 <div class="container-sm">
   <div class="row justify-content-center">
     {% for item in items %}
-    <div class="col-md-2 border p-3 m-3 item">
-      <h6>{{ item.name }}</h6>
-      <div
-        class="item-toggle mx-auto {{'item-reserved' if item.status}}"
-        onclick="toggleItem(this, '{{item.id}}')"
-      ></div>
+    <div class="col-lg-3">
+      <div class="item border p-3 m-3">
+        <h6>{{ item.name }}</h6>
+        <div
+          class="item-toggle mx-auto {{'item-reserved' if item.status}}"
+          onclick="toggleItem(this, '{{item.id}}')"
+        ></div>
+      </div>
     </div>
     {% endfor %}
-    <div class="col-md-2 border p-3 m-3">
-      <form name="login" action="" method="post">
-        <div class="mb-3">
-          <h6>Add an item</h6>
-          {{ form.name(class_="form-control") }}
-        </div>
-        {{ form.hidden_tag() }} {{ form.submit(class_="btn btn-primary") }}
-      </form>
+    <div class="col-lg-3">
+      <div class="item border p-3 m-3">
+        <form name="login" action="" method="post">
+          <div class="mb-3">
+            <h6>Add an item</h6>
+            {{ form.name(class_="form-control") }}
+          </div>
+          {{ form.hidden_tag() }} {{ form.submit(class_="btn btn-primary") }}
+        </form>
+      </div>
     </div>
   </div>
 </div>
