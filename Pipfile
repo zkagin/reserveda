@@ -8,6 +8,13 @@ verify_ssl = true
 [packages]
 black = "*"
 flake8 = "*"
+flask = "*"
+flask-sqlalchemy = "*"
+flask-wtf = "*"
+email-validator = "*"
+flask-login = "*"
+requests = "*"
+hashids = "*"
 
 [requires]
 python_version = "3.8"

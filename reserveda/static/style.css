@@ -1,0 +1,16 @@
+.item {
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.item-toggle {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 2.5rem;
+  cursor: pointer;
+  background-color: green;
+}
+
+.item-reserved {
+  background-color: red;
+}

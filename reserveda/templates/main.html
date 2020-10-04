@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block content %} {% set invite_url =
+url_for('index', _external=True, c=current_user.group.code) %}
+
+<div class="container bg-light p-3 my-3 text-center">
+  Send others a link to sign up with your unique group code.<br />
+  <a href="{{invite_url}}">{{invite_url}}</a>
+</div>
+
+<div class="container-sm">
+  <div class="row justify-content-center">
+    {% for item in items %}
+    <div class="col-md-2 border p-3 m-3 item">
+      <h6>{{ item.name }}</h6>
+      <div
+        class="item-toggle mx-auto {{'item-reserved' if item.status}}"
+        onclick="toggleItem(this, '{{item.id}}')"
+      ></div>
+    </div>
+    {% endfor %}
+    <div class="col-md-2 border p-3 m-3">
+      <form name="login" action="" method="post">
+        <div class="mb-3">
+          <h6>Add an item</h6>
+          {{ form.name(class_="form-control") }}
+        </div>
+        {{ form.hidden_tag() }} {{ form.submit(class_="btn btn-primary") }}
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleItem(button, id) {
+    fetch("{{url_for('toggle_item')}}", {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ id: id }),
+      headers: new Headers({ "content-type": "application/json" }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status == true) {
+          button.classList.add("item-reserved");
+        } else {
+          button.classList.remove("item-reserved");
+        }
+      });
+  }
+</script>
+
+{% endblock %}
