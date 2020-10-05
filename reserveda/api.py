@@ -1,3 +1,8 @@
+# api.py
+# Contains all functions that interface with the database, and may later convert into
+# a fully capable and independent API (which would require adding additional
+# authentication logic)
+
 from reserveda import db
 from reserveda.models import Group, Item, User, Event
 from hashids import Hashids

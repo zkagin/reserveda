@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from .momentjs import momentjs
 from reserveda import config
 
+# Basic configuration of the application.
 app = Flask(__name__)
 app.config.from_object(config)
 app.jinja_env.globals["momentjs"] = momentjs
@@ -14,6 +15,7 @@ login.login_view = "index"
 from reserveda import models, routes  # noqa
 
 
+# Helper function for flask_login to understand when a user is logged in.
 @login.user_loader
 def load_user(id):
     return models.User.query.get(int(id))

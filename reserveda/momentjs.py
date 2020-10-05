@@ -1,3 +1,6 @@
+# momentjs.py
+# Helper class for processing timestamps locally through Jinja2 templates.
+
 from jinja2 import Markup
 
 

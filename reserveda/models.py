@@ -1,3 +1,7 @@
+# models.py
+# Contains the model representations for all Reserveda objects. These models are then
+# reflected in the database structure through Flask-SQLAlchemy.
+
 from reserveda import db
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
