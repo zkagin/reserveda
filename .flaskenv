@@ -1,0 +1,2 @@
+FLASK_APP=reserveda
+FLASK_ENV=development

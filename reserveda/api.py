@@ -8,11 +8,6 @@ from reserveda.models import Group, Item, User, Event
 from hashids import Hashids
 
 
-def setup_db():
-    # db.drop_all()
-    db.create_all()
-
-
 def register(email, password, code=None):
     if code:
         group = Group.query.filter_by(code=code).first()

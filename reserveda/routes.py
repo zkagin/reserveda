@@ -21,10 +21,8 @@ def add_header(response):
 @app.route("/", methods=["GET", "POST"])
 def index():
     """
-    Serves the main index page. Also configures the DB if this is the first time.
+    Serves the main index page.
     """
-    api.setup_db()
-
     code = request.args.get("c")
     data = None
     if code:

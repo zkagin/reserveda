@@ -29,16 +29,7 @@ SECRET_KEY=
 
 # Running the app
 
-To run the app locally using the Flask development server...
-
-Configure the flask environment variables
-
-```
-export FLASK_APP=reserveda
-export FLASK_ENV=development
-```
-
-Run the development server
+To run the app locally using the Flask development server:
 
 ```
 pipenv run flask run
