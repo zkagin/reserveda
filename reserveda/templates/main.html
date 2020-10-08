@@ -8,23 +8,29 @@ url_for('index', _external=True, c=current_user.group.code) %}
 
 <div class="container-sm">
   <div class="row justify-content-center">
-    {% for item in items %}
+    {% for item in items %} {% set last_event =
+    item.events|selectattr("action","equalto", "reserved")|list|last %}
     <div class="col-lg-3 item-parent">
       <div class="item border m-3">
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
             <span class="navbar-text text-body">{{ item.name }}</span>
-            <div class="item-delete" onclick="deleteItem(this, '{{item.id}}')">
+            <div class="item-delete" onclick="deleteItem('{{item.id}}')">
               &#10006;
             </div>
           </div>
         </nav>
         <div
           class="item-toggle my-4 mx-auto {{'item-reserved' if item.status}}"
-          onclick="toggleItem(this, '{{item.id}}')"
+          onclick="toggleItem('{{item.id}}')"
         ></div>
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
+            <div>
+              {% if last_event and item.status %} Reserved by {{ item.user.email
+              }} {{ momentjs(last_event.timestamp).calendar() }} {% else %}
+              Available {% endif %}
+            </div>
             <a
               class="navbar-text"
               href="{{url_for('history', item_id=item.id)}}"
@@ -54,7 +60,7 @@ url_for('index', _external=True, c=current_user.group.code) %}
 </div>
 
 <script>
-  function toggleItem(button, id) {
+  function toggleItem(id) {
     fetch("{{url_for('toggle_item')}}", {
       method: "POST",
       credentials: "same-origin",
@@ -63,13 +69,11 @@ url_for('index', _external=True, c=current_user.group.code) %}
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success == true) {
-          button.classList.toggle("item-reserved");
-        }
+        location.reload();
       });
   }
 
-  function deleteItem(button, id) {
+  function deleteItem(id) {
     fetch("{{url_for('delete_item')}}", {
       method: "POST",
       credentials: "same-origin",
@@ -78,9 +82,7 @@ url_for('index', _external=True, c=current_user.group.code) %}
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success == true) {
-          button.closest(".item-parent").remove();
-        }
+        location.reload();
       });
   }
 

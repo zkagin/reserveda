@@ -40,7 +40,9 @@ def get_item(item_id):
 
 
 def list_items(group_id):
-    return Item.query.filter_by(group_id=group_id, deleted=False).all()
+    return (
+        Item.query.filter_by(group_id=group_id, deleted=False).order_by(Item.id).all()
+    )
 
 
 def add_item(user_id, name):
@@ -66,8 +68,17 @@ def toggle_item(user_id, item_id):
     if not check_item_access(user_id=user_id, item_id=item_id):
         return False
     item = Item.query.filter_by(id=item_id).first()
-    item.status = not item.status
-    action = "reserved" if item.status else "returned"
+    if item.status and item.owner_id != user_id:
+        return False
+
+    if item.status:
+        item.status = False
+        item.owner_id = None
+        action = "returned"
+    else:
+        item.status = True
+        item.owner_id = user_id
+        action = "reserved"
     event = Event(
         action=action, item_id=item_id, user_id=user_id, group_id=item.group_id
     )
@@ -82,6 +93,7 @@ def delete_item(user_id, item_id):
         return False
     item = Item.query.filter_by(id=item_id).first()
     item.status = False
+    item.owner_id = None
     item.deleted = True
     event = Event(
         action="deleted", item_id=item.id, user_id=user_id, group_id=item.group_id
@@ -95,4 +107,4 @@ def delete_item(user_id, item_id):
 def list_events(user_id, item_id):
     if not check_item_access(user_id=user_id, item_id=item_id):
         return False
-    return Event.query.filter_by(item_id=item_id).all()
+    return Event.query.filter_by(item_id=item_id).order_by(Event.id).all()

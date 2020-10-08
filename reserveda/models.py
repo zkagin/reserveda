@@ -2,6 +2,7 @@
 # Contains the model representations for all Reserveda objects. These models are then
 # reflected in the database structure through Flask-SQLAlchemy.
 
+from datetime import datetime
 from reserveda import db
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -22,6 +23,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
     events = db.relationship("Event", backref="user", lazy=True)
+    owned_items = db.relationship("Item", backref="user", lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -38,15 +40,14 @@ class Item(db.Model):
     deleted = db.Column(db.Boolean, default=False, nullable=False)
     events = db.relationship("Event", backref="item", lazy=True)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
 
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     action = db.Column(db.String(80), nullable=False)
     comment = db.Column(db.String(80), nullable=True)
-    timestamp = db.Column(
-        db.DateTime, server_default=db.func.current_timestamp(), nullable=False
-    )
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
