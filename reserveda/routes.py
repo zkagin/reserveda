@@ -70,7 +70,14 @@ def history(item_id):
     """Shows the event history of a provided item."""
     events = api.list_events(current_user.id, item_id=item_id)
     item = api.get_item(item_id)
-    return render_template("item_history.html", events=events, item=item)
+    event_pairs = []
+    for event in events:
+        if event.action == "reserved":
+            event_pairs.append([event])
+        if event.action == "returned":
+            event_pairs[-1].append(event)
+
+    return render_template("item_history.html", events=event_pairs, item=item)
 
 
 ####################
@@ -85,7 +92,8 @@ def toggle_item():
         return False
     user_id = current_user.id
     item_id = request.json["id"]
-    success = api.toggle_item(user_id=user_id, item_id=item_id)
+    comment = request.json["comment"] if "comment" in request.json else None
+    success = api.toggle_item(user_id=user_id, item_id=item_id, comment=comment)
     return make_response(jsonify({"success": success}), 200)
 
 

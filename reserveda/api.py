@@ -64,7 +64,7 @@ def check_item_access(user_id, item_id):
     return item and user and item.group_id == user.group_id
 
 
-def toggle_item(user_id, item_id):
+def toggle_item(user_id, item_id, comment):
     if not check_item_access(user_id=user_id, item_id=item_id):
         return False
     item = Item.query.filter_by(id=item_id).first()
@@ -84,6 +84,8 @@ def toggle_item(user_id, item_id):
     )
     db.session.add(item)
     db.session.add(event)
+    if comment:
+        event.comment = comment
     db.session.commit()
     return True
 

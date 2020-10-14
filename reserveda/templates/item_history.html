@@ -7,17 +7,20 @@
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">Time</th>
-            <th scope="col">Action</th>
             <th scope="col">User</th>
+            <th scope="col">Time Reserved</th>
+            <th scope="col">Time Returned</th>
+            <th scope="col">Comment</th>
           </tr>
         </thead>
         <tbody>
-          {% for event in events|reverse %}
+          {% for event_pair in events|reverse %} {% set reserved = event_pair[0]
+          %} {% set returned = event_pair[1] if event_pair[1] %}
           <tr>
-            <td>{{ momentjs(event.timestamp).calendar() }}</td>
-            <td>{{ event.action }}</td>
-            <td>{{ event.user.email }}</td>
+            <td>{{ reserved.user.email }}</td>
+            <td>{{ momentjs(reserved.timestamp).calendar() }}</td>
+            <td>{{ momentjs(returned.timestamp).calendar() if returned }}</td>
+            <td>{{ reserved.comment if reserved.comment else "" }}</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -8,11 +8,15 @@
   height: 5rem;
   border-radius: 2.5rem;
   cursor: pointer;
-  background-color: green;
+  background-color: #2ecc40;
+  background-image: linear-gradient(to bottom right, #2ecc40, #239b31);
+  box-shadow: 0px 8px 14px -7px #2ecc40;
 }
 
 .item-reserved {
-  background-color: red;
+  background-color: #ff4136;
+  background-image: linear-gradient(to bottom right, #ff4136, #ce332b);
+  box-shadow: 0px 8px 14px -7px #ff4136;
 }
 
 .item-delete {

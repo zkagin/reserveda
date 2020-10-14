@@ -20,10 +20,20 @@ url_for('index', _external=True, c=current_user.group.code) %}
             </div>
           </div>
         </nav>
+        {% if item.status %}
         <div
-          class="item-toggle my-4 mx-auto {{'item-reserved' if item.status}}"
+          class="item-toggle my-4 mx-auto item-reserved"
           onclick="toggleItem('{{item.id}}')"
         ></div>
+        {% else %}
+        <div
+          class="item-toggle my-4 mx-auto"
+          data-toggle="modal"
+          data-target="#toggleItemModal"
+          data-title="{{ item.name }}"
+          data-id="{{ item.id }}"
+        ></div>
+        {% endif %}
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
             <div>
@@ -59,12 +69,65 @@ url_for('index', _external=True, c=current_user.group.code) %}
   </div>
 </div>
 
+<div
+  class="modal fade"
+  id="toggleItemModal"
+  tabindex="-1"
+  aria-labelledby="toggleItemModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="toggleItemModalLabel">Add a Comment</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control" id="toggleItemComment" />
+        <input type="hidden" class="form-control" id="toggleItemId" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-dismiss="modal"
+          onclick="toggleItem()"
+        >
+          Reserve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  function toggleItem(id) {
+  var toggleItemModal = document.getElementById("toggleItemModal");
+  console.log(toggleItemModal);
+  toggleItemModal.addEventListener("show.bs.modal", function (event) {
+    var button = event.relatedTarget;
+    var title = button.getAttribute("data-title");
+    var itemId = button.getAttribute("data-id");
+    var modalTitle = toggleItemModal.querySelector(".modal-title");
+    var modalHidden = toggleItemModal.querySelector("#toggleItemId");
+    modalTitle.textContent = title + ": Add a comment";
+    modalHidden.value = itemId;
+  });
+
+  function toggleItem(itemId) {
+    itemId = itemId | document.getElementById("toggleItemId").value;
+    comment = document.getElementById("toggleItemComment").value;
     fetch("{{url_for('toggle_item')}}", {
       method: "POST",
       credentials: "same-origin",
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ id: itemId, comment: comment }),
       headers: new Headers({ "content-type": "application/json" }),
     })
       .then((response) => response.json())
