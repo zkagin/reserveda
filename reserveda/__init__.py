@@ -16,7 +16,15 @@ login = LoginManager(app)
 login.login_view = "index"
 
 # Configure Talisman
-csp = {"default-src": ["self", "cdnjs.cloudflare.com", "stackpath.bootstrapcdn.com"]}
+csp = {
+    "default-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "cdnjs.cloudflare.com",
+        "stackpath.bootstrapcdn.com",
+    ]
+}
+
 Talisman(app, content_security_policy=csp)
 
 from reserveda import models, routes  # noqa
