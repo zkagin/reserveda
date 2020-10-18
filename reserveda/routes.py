@@ -1,7 +1,17 @@
 # routes.py
 # All URL endpoints that a user may access, including GET and POST endpoints.
 
-from flask import jsonify, make_response, redirect, render_template, request, url_for
+import csv
+from io import StringIO
+from flask import (
+    jsonify,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    Response,
+    url_for,
+)
 from flask_login import current_user, login_user, logout_user, login_required
 from reserveda import app, api
 from reserveda.forms import AddItemForm, LogInForm, SignUpForm
@@ -86,10 +96,9 @@ def history(item_id):
 
 
 @app.route("/toggle_item", methods=["POST"])
+@login_required
 def toggle_item():
     """Turns the provided item id on or off."""
-    if not current_user:
-        return False
     user_id = current_user.id
     item_id = request.json["id"]
     comment = request.json["comment"] if "comment" in request.json else None
@@ -98,11 +107,40 @@ def toggle_item():
 
 
 @app.route("/delete_item", methods=["POST"])
+@login_required
 def delete_item():
     """Deletes the provided item id."""
-    if not current_user:
-        return False
     user_id = current_user.id
     item_id = request.json["id"]
     success = api.delete_item(user_id=user_id, item_id=item_id)
     return make_response(jsonify({"success": success}), 200)
+
+
+@app.route("/download_history/<item_id>", methods=["GET"])
+@login_required
+def download_history(item_id):
+    """Downloads a csv of the event history for a specified item."""
+    events = api.list_events(current_user.id, item_id=item_id)
+    item = api.get_item(item_id)
+    csv_list = []
+    csv_list.append(["user", "action", "time", "comment"])
+    for event in reversed(events):
+        csv_list.append(
+            [event.user.email, event.action, event.timestamp, event.comment]
+        )
+
+    def generate():
+        data = StringIO()
+        w = csv.writer(data)
+        # Write each item
+        for row in csv_list:
+            w.writerow(row)
+            yield data.getvalue()
+            data.seek(0)
+            data.truncate(0)
+
+    response = Response(generate(), mimetype="text/csv")
+    response.headers.set(
+        "Content-Disposition", "attachment", filename=f"{item.name}_history.csv"
+    )
+    return response
