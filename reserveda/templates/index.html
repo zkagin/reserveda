@@ -2,84 +2,33 @@
 
 <div class="container-sm">
   <div class="row justify-content-center">
-    <div class="col-lg-8 bg-light p-5 my-5 text-center">
+    <div class="col-lg-4 bg-light p-4 my-5 text-center border rounded-lg">
       Reserveda is a simple reservation system to keep track of items only one
-      person can access at a time.<br /><br />
-      {% if current_user.email %} You're already logged in {{ current_user.email
-      }}.
+      person can access at a time. {% if current_user.email %}
+      <br /><br />You're already logged in {{ current_user.email }}.
       <a href="{{url_for('main')}}">See your list of items.</a>
-      {% else %} Sign up to start reserving now. {% endif %}
+      {% endif %}
     </div>
-
-    <div class="col-lg-8">
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <a
-            class="nav-item nav-link active"
-            id="nav-signup-tab"
-            data-toggle="tab"
-            href="#nav-signup"
-            role="tab"
-            aria-controls="nav-signup"
-            aria-selected="true"
-            >Sign Up</a
-          >
-          <a
-            class="nav-item nav-link"
-            id="nav-login-tab"
-            data-toggle="tab"
-            href="#nav-login"
-            role="tab"
-            aria-controls="nav-login"
-            aria-selected="false"
-            >Log In</a
-          >
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-4 border rounded-lg p-4">
+      <div class="h3 text-center font-weight-light">Sign up now</div>
+      <form name="signup" action="" method="post">
+        {% for field in signup_form %} {% if field.type not in
+        ["CSRFTokenField", "SubmitField"] %}
+        <div class="mb-3">
+          {{ field.label(class="form-label") }} {{ field(class_="form-control")
+          }} {% for error in field.errors %}
+          <div class="is-invalid">[{{ error }}]</div>
+          {% endfor %}
         </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        <div
-          class="tab-pane fade show active"
-          id="nav-signup"
-          role="tabpanel"
-          aria-labelledby="nav-signup-tab"
-        >
-          <div class="p-4 border-left border-bottom border-right">
-            <form name="signup" action="" method="post">
-              {% for field in signup_form %} {% if field.type not in
-              ["CSRFTokenField", "SubmitField"] %}
-              <div class="mb-3">
-                {{ field.label(class="form-label") }} {{
-                field(class_="form-control") }} {% for error in field.errors %}
-                <div class="is-invalid">[{{ error }}]</div>
-                {% endfor %}
-              </div>
-              {% endif %} {% endfor %} {{ signup_form.hidden_tag() }} {{
-              signup_form.submit(class_="btn btn-primary") }}
-            </form>
-          </div>
+        {% endif %} {% endfor %} {{ signup_form.hidden_tag() }} {{
+        signup_form.submit(class_="btn btn-primary btn-block mt-4") }}
+        <div class="text-center pt-3">
+          Already have an account?
+          <a href="{{url_for('login')}}">Log in here.</a>
         </div>
-        <div
-          class="tab-pane fade"
-          id="nav-login"
-          role="tabpanel"
-          aria-labelledby="nav-login-tab"
-        >
-          <div class="p-4 border-left border-bottom border-right">
-            <form name="login" action="" method="post">
-              {% for field in login_form %} {% if field.type not in
-              ["CSRFTokenField", "SubmitField"] %}
-              <div class="mb-3">
-                {{ field.label(class="form-label") }} {{
-                field(class_="form-control") }} {% for error in field.errors %}
-                <span style="color: red">[{{ error }}]</span>
-                {% endfor %}
-              </div>
-              {% endif %} {% endfor %} {{ login_form.hidden_tag() }} {{
-              login_form.submit(class_="btn btn-primary") }}
-            </form>
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>

@@ -63,6 +63,17 @@ def signout():
     return redirect(url_for("index"))
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LogInForm()
+    if form.validate_on_submit():
+        user = api.login(email=form.email.data, password=form.password.data)
+        if user:
+            login_user(user, remember=True)
+            return redirect(url_for("main"))
+    return render_template("login.html", form=form)
+
+
 @app.route("/main", methods=["GET", "POST"])
 @login_required
 def main():

@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="row justify-content-center pt-5">
+  <div class="col-lg-4 border rounded-lg p-4">
+    <div class="h3 text-center font-weight-light">Log in to your account</div>
+    <form name="login" action="" method="post">
+      {% for field in form %} {% if field.type not in ["CSRFTokenField",
+      "SubmitField"] %}
+      <div class="mb-3">
+        {{ field.label(class="form-label") }} {{ field(class_="form-control") }}
+        {% for error in field.errors %}
+        <span style="color: red">[{{ error }}]</span>
+        {% endfor %}
+      </div>
+      {% endif %} {% endfor %} {{ form.hidden_tag() }} {{
+      form.submit(class_="btn btn-primary btn-block mt-4") }}
+    </form>
+  </div>
+</div>
+
+{% endblock %}
