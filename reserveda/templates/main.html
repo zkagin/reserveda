@@ -10,7 +10,7 @@ url_for('index', _external=True, c=current_user.group.code) %}
   <div class="row justify-content-center">
     {% for item in items %} {% set last_event =
     item.events|selectattr("action","equalto", "reserved")|list|last %}
-    <div class="col-lg-3 item-parent">
+    <div class="col-lg-4 item-parent">
       <div class="item border m-3">
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
@@ -22,36 +22,60 @@ url_for('index', _external=True, c=current_user.group.code) %}
         </nav>
         {% if item.status %}
         <div
-          class="item-toggle my-4 mx-auto item-reserved"
+          class="item-button my-4 mx-auto item-reserved"
           onclick="toggleItem('{{item.id}}')"
         ></div>
         {% else %}
         <div
-          class="item-toggle my-4 mx-auto"
+          class="item-button my-4 mx-auto"
           data-toggle="modal"
           data-target="#toggleItemModal"
           data-title="{{ item.name }}"
           data-id="{{ item.id }}"
         ></div>
         {% endif %}
-        <nav class="navbar navbar-light bg-light">
-          <div class="container-fluid">
-            <div>
-              {% if last_event and item.status %} Reserved by {{ item.user.email
-              }} {{ momentjs(last_event.timestamp).calendar() }} {% else %}
-              Available {% endif %}
+        <div class="container-fluid item-bottom-bar py-3 text-secondary">
+          <div class="row">
+            <div class="col text-left">
+              {% if last_event and item.status %}
+              <a
+                class="text-secondary"
+                data-toggle="collapse"
+                href="#reserved-details-{{item.id}}"
+                >Reserved</a
+              >
+              {% else %} Available {% endif %}
             </div>
-            <a
-              class="navbar-text"
-              href="{{url_for('history', item_id=item.id)}}"
-              >View History</a
-            >
+            <div class="col text-right">
+              <a
+                class="text-secondary"
+                href="{{url_for('history', item_id=item.id)}}"
+                >View History</a
+              >
+            </div>
           </div>
-        </nav>
+          {% if last_event and item.status %}
+          <div class="collapse" id="reserved-details-{{item.id}}">
+            <div class="row">
+              <div class="col-12">Reserved by {{item.user.email}}</div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                {{momentjs(last_event.timestamp).calendar()}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                {% if last_event.comment %}{{last_event.comment}}{% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
       </div>
     </div>
     {% endfor %}
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <div class="item border m-3">
         <form name="login" action="" method="post">
           <nav class="navbar navbar-light bg-light">

@@ -3,10 +3,14 @@
   text-align: center;
 }
 
-.item-toggle {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 2.5rem;
+.item-bottom-bar {
+  background-color: #f8f9fa;
+}
+
+.item-button {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 3rem;
   cursor: pointer;
   background-color: #2ecc40;
   background-image: linear-gradient(to bottom right, #2ecc40, #239b31);
