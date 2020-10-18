@@ -2,6 +2,7 @@
 # All URL endpoints that a user may access, including GET and POST endpoints.
 
 import csv
+import datetime
 from io import StringIO
 from flask import (
     jsonify,
@@ -116,23 +117,27 @@ def delete_item():
     return make_response(jsonify({"success": success}), 200)
 
 
-@app.route("/download_history/<item_id>", methods=["GET"])
+@app.route("/download_history", methods=["GET"])
 @login_required
-def download_history(item_id):
+def download_history():
     """Downloads a csv of the event history for a specified item."""
+    item_id = request.args.get("id")
+    offset = request.args.get("offset")
     events = api.list_events(current_user.id, item_id=item_id)
-    item = api.get_item(item_id)
     csv_list = []
-    csv_list.append(["user", "action", "time", "comment"])
-    for event in reversed(events):
-        csv_list.append(
-            [event.user.email, event.action, event.timestamp, event.comment]
-        )
+    for event in events:
+        new_timestamp = event.timestamp - datetime.timedelta(minutes=int(offset))
+        new_timestamp = new_timestamp.replace(microsecond=0)
+        if event.action == "reserved":
+            csv_list.append([event.user.email, new_timestamp, None, event.comment])
+        elif event.action == "returned":
+            csv_list[-1][2] = new_timestamp
+    csv_list.append(["user", "reserved", "returned", "comment"])
+    csv_list.reverse()
 
     def generate():
         data = StringIO()
         w = csv.writer(data)
-        # Write each item
         for row in csv_list:
             w.writerow(row)
             yield data.getvalue()
@@ -140,7 +145,5 @@ def download_history(item_id):
             data.truncate(0)
 
     response = Response(generate(), mimetype="text/csv")
-    response.headers.set(
-        "Content-Disposition", "attachment", filename=f"{item.name}_history.csv"
-    )
+    response.headers.set("Content-Disposition", "attachment")
     return response

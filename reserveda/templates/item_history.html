@@ -9,13 +9,13 @@
             <h5>{{item.name}} reservation history</h5>
           </div>
           <div class="col">
-            <a
+            <button
               type="button"
               class="btn btn-primary float-right"
-              href="{{url_for('download_history', item_id=item.id)}}"
+              onclick="downloadHistory()"
             >
               Download
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -43,5 +43,25 @@
     </div>
   </div>
 </div>
+
+<script>
+  var saveAs = require("file-saver");
+  function downloadHistory() {
+    item_id = "{{ item.id }}";
+    filename = "{{item.name}}_history.csv";
+    offset = new Date().getTimezoneOffset();
+    url = new URL("{{url_for('download_history', _external=True)}}");
+    url.search = new URLSearchParams({
+      id: item_id,
+      offset: offset,
+    });
+    fetch(url, {
+      headers: { "Content-Type": "text/csv" },
+      responseType: "blob",
+    })
+      .then((response) => response.blob())
+      .then((blob) => saveAs(blob, filename));
+  }
+</script>
 
 {% endblock %}
