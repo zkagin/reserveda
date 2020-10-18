@@ -110,7 +110,6 @@ url_for('index', _external=True, c=current_user.group.code) %}
 
 <script>
   var toggleItemModal = document.getElementById("toggleItemModal");
-  console.log(toggleItemModal);
   toggleItemModal.addEventListener("show.bs.modal", function (event) {
     var button = event.relatedTarget;
     var title = button.getAttribute("data-title");
