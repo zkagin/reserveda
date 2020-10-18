@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_talisman import Talisman
 from .momentjs import momentjs
 from reserveda import config
 
@@ -13,6 +14,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = "index"
+
+# Configure Talisman
+csp = {"default-src": ["self", "cdnjs.cloudflare.com", "stackpath.bootstrapcdn.com"]}
+Talisman(app, content_security_policy=csp)
 
 from reserveda import models, routes  # noqa
 
