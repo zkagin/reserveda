@@ -7,11 +7,11 @@ url_for('index', _external=True, c=current_user.group.code) %}
 </div>
 
 <div class="container-sm">
-  <div class="row justify-content-center">
+  <div class="row">
     {% for item in items %} {% set last_event =
     item.events|selectattr("action","equalto", "reserved")|list|last %}
     <div class="col-lg-4">
-      <div class="item border rounded-lg m-3">
+      <div class="item border rounded-lg mx-2 my-3">
         <div class="container-fluid rounded-top bg-light p-3">
           <div class="row">
             <div class="col text-left">{{ item.name }}</div>
@@ -93,13 +93,13 @@ url_for('index', _external=True, c=current_user.group.code) %}
     </div>
     {% endfor %}
     <div class="col-lg-4">
-      <div class="item border m-3">
+      <div class="item border rounded-lg mx-2 my-3">
         <form name="login" action="" method="post">
-          <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-              <span class="navbar-text text-body">Add an item</span>
+          <div class="container-fluid rounded-top bg-light p-3">
+            <div class="row">
+              <div class="col text-left">Add an item</div>
             </div>
-          </nav>
+          </div>
           <div class="m-3">
             {{ form.name(class_="form-control") }} {{ form.hidden_tag() }}
             <div class="m-3">{{ form.submit(class_="btn btn-primary") }}</div>
