@@ -17,7 +17,10 @@ url_for('index', _external=True, c=current_user.group.code) %}
             <div class="col text-left">{{ item.name }}</div>
             <div
               class="col item-delete text-right"
-              onclick="deleteItem('{{item.id}}')"
+              data-toggle="modal"
+              data-target="#deleteItemModal"
+              data-title="{{ item.name }}"
+              data-id="{{ item.id }}"
             >
               &#10006;
             </div>
@@ -112,6 +115,42 @@ url_for('index', _external=True, c=current_user.group.code) %}
 
 <div
   class="modal fade"
+  id="deleteItemModal"
+  tabindex="-1"
+  aria-labelledby="deleteItemModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteItemModalLabel">Delete item</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete this item?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          id="delete-item-button"
+          type="button"
+          class="btn btn-primary"
+          data-dismiss="modal"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
   id="toggleItemModal"
   tabindex="-1"
   aria-labelledby="toggleItemModalLabel"
@@ -164,6 +203,19 @@ url_for('index', _external=True, c=current_user.group.code) %}
     var modalHidden = toggleItemModal.querySelector("#toggleItemId");
     modalTitle.textContent = title + ": Add a comment";
     modalHidden.value = itemId;
+  });
+
+  var deleteItemModal = document.getElementById("deleteItemModal");
+  deleteItemModal.addEventListener("show.bs.modal", function (event) {
+    var button = event.relatedTarget;
+    var title = button.getAttribute("data-title");
+    var itemId = button.getAttribute("data-id");
+    var modalTitle = deleteItemModal.querySelector(".modal-title");
+    modalTitle.textContent = "Delete " + title + "?";
+    var deleteButton = deleteItemModal.querySelector("#delete-item-button");
+    deleteButton.onclick = function () {
+      deleteItem(itemId);
+    };
   });
 
   function toggleItem(itemId) {
