@@ -247,6 +247,8 @@ url_for('index', _external=True, c=current_user.group.code) %}
   }
 
   var item_status = null;
+  getStatus();
+
   function getStatus() {
     fetch("{{url_for('list_items')}}", { method: "GET" })
       .then((response) => response.json())
