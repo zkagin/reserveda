@@ -107,6 +107,15 @@ def history(item_id):
 ####################
 
 
+@app.route("/list_items", methods=["GET"])
+@login_required
+def list_items():
+    """Provides a list of all items for the user's group."""
+    items = api.list_items(current_user.group_id)
+    response = {i.id: i.status for i in items}
+    return make_response(jsonify(response), 200)
+
+
 @app.route("/toggle_item", methods=["POST"])
 @login_required
 def toggle_item():

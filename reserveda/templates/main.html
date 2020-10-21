@@ -246,6 +246,24 @@ url_for('index', _external=True, c=current_user.group.code) %}
       });
   }
 
+  var item_status = null;
+  function getStatus() {
+    fetch("{{url_for('list_items')}}", { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (item_status == null) {
+          item_status = data;
+        }
+        if (JSON.stringify(item_status) != JSON.stringify(data)) {
+          location.reload();
+        }
+      });
+  }
+
+  setInterval(function () {
+    getStatus();
+  }, 5000);
+
   window.onpageshow = function (event) {
     if (event.persisted) {
       window.location.reload();
