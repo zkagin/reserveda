@@ -123,7 +123,8 @@ def toggle_item():
     user_id = current_user.id
     item_id = request.json["id"]
     comment = request.json["comment"] if "comment" in request.json else None
-    success = api.toggle_item(user_id=user_id, item_id=item_id, comment=comment)
+    force = bool(request.json["force"]) if "force" in request.json else False
+    success = api.toggle_item(user_id, item_id, comment, force)
     return make_response(jsonify({"success": success}), 200)
 
 

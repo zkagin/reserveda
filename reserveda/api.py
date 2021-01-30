@@ -64,11 +64,11 @@ def check_item_access(user_id, item_id):
     return item and user and item.group_id == user.group_id
 
 
-def toggle_item(user_id, item_id, comment):
+def toggle_item(user_id, item_id, comment, force):
     if not check_item_access(user_id=user_id, item_id=item_id):
         return False
     item = Item.query.filter_by(id=item_id).first()
-    if item.status and item.owner_id != user_id:
+    if item.status and item.owner_id != user_id and not force:
         return False
 
     if item.status:

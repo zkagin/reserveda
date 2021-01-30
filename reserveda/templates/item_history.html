@@ -29,12 +29,18 @@
           </tr>
         </thead>
         <tbody>
-          {% for event_pair in events|reverse %} {% set reserved = event_pair[0]
-          %} {% set returned = event_pair[1] if event_pair[1] %}
+          {% for event_pair in events|reverse %}
+          {% set reserved = event_pair[0] %}
+          {% set returned = event_pair[1] if event_pair[1] %}
           <tr>
             <td>{{ reserved.user.email }}</td>
             <td>{{ momentjs(reserved.timestamp).calendar() }}</td>
-            <td>{{ momentjs(returned.timestamp).calendar() if returned }}</td>
+            <td>
+              {{ momentjs(returned.timestamp).calendar() if returned }}
+              {% if returned and reserved.user.email != returned.user.email %}
+              ({{ returned.user.email  }})
+              {% endif %}
+            </td>
             <td>{{ reserved.comment if reserved.comment else "" }}</td>
           </tr>
           {% endfor %}
