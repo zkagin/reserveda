@@ -4,7 +4,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import DataRequired, ValidationError, Length, Email
+from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo
 from reserveda.models import User
 
 
@@ -41,3 +41,16 @@ class LogInForm(FlaskForm):
 class AddItemForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     submit = SubmitField("Add")
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Request Password Reset")
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField(
+        "Repeat Password", validators=[DataRequired(), EqualTo("password")]
+    )
+    submit = SubmitField("Request Password Reset")

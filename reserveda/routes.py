@@ -5,6 +5,7 @@ import csv
 import datetime
 from io import StringIO
 from flask import (
+    flash,
     jsonify,
     make_response,
     redirect,
@@ -15,7 +16,13 @@ from flask import (
 )
 from flask_login import current_user, login_user, logout_user, login_required
 from reserveda import app, api
-from reserveda.forms import AddItemForm, LogInForm, SignUpForm
+from reserveda.forms import (
+    AddItemForm,
+    LogInForm,
+    SignUpForm,
+    ResetPasswordForm,
+    ResetPasswordRequestForm,
+)
 
 
 @app.after_request
@@ -100,6 +107,39 @@ def history(item_id):
             event_pairs[-1].append(event)
 
     return render_template("item_history.html", events=event_pairs, item=item)
+
+
+@app.route("/reset_password_request", methods=["GET", "POST"])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for("main"))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        api.send_password_reset_email(form.email.data)
+        flash(
+            """
+            Check your email for instructions to reset your password.
+            Be sure to check the spam folder as well.
+            """
+        )
+        return redirect(url_for("login"))
+    return render_template("reset_password_request.html", form=form)
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("main"))
+    user_email = api.verify_reset_password_token(token)
+    if not user_email:
+        return redirect(url_for("index"))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        api.set_password(user_email, form.password.data)
+        flash("Your password has been reset.")
+        return redirect(url_for("login"))
+    return render_template("reset_password.html", form=form)
 
 
 ####################

@@ -3,7 +3,7 @@
 # a fully capable and independent API (which would require adding additional
 # authentication logic)
 
-from reserveda import db
+from reserveda import db, email as email_api
 from reserveda.models import Group, Item, User, Event
 from hashids import Hashids
 
@@ -110,3 +110,23 @@ def list_events(user_id, item_id):
     if not check_item_access(user_id=user_id, item_id=item_id):
         return False
     return Event.query.filter_by(item_id=item_id).order_by(Event.id).all()
+
+
+def send_password_reset_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        email_api.send_password_reset_email(user)
+
+
+def verify_reset_password_token(token):
+    user = User.verify_reset_password_token(token)
+    if user:
+        return user.email
+    return None
+
+
+def set_password(email, password):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        user.set_password(password)
+        db.session.commit()

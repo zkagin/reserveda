@@ -19,6 +19,8 @@ psycopg2-binary = "*"
 gunicorn = "*"
 flask-migrate = "*"
 flask-talisman = "*"
+flask-mail = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.8"
