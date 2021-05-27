@@ -8,8 +8,8 @@ url_for('index', _external=True, c=current_user.group.code) %}
 
 <div class="container-sm">
   <div class="row">
-    {% for item in items %} {% set last_event =
-    item.events|selectattr("action","equalto", "reserved")|list|last %}
+    {% for item in items %}
+    {% set last_event = item.events|sort(attribute="timestamp")|selectattr("action","equalto", "reserved")|list|last %}
     <div class="col-lg-4">
       <div class="item border rounded-lg mx-2 my-3">
         <div class="container-fluid rounded-top bg-light p-3">
