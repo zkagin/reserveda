@@ -81,7 +81,7 @@ url_for('index', _external=True, c=current_user.group.code) %}
                         <tbody>
                             {% for waitlist in item.waitlists %}
                             <tr>
-                                <td class="text-left">
+                                <td class="text-left text-break">
                                     {{ waitlist.user.email }}
                                     {% if waitlist.comment is not none %}
                                     <br />{{ waitlist.comment }}
