@@ -28,3 +28,12 @@ def send_password_reset_email(user):
         text_body=render_template("email/reset_password.txt", user=user, token=token),
         html_body=render_template("email/reset_password.html", user=user, token=token),
     )
+
+
+def send_off_waitlist_email(user, item):
+    send_email(
+        f"[Reserveda] You've reserved {item.name}!",
+        recipient=user.email,
+        text_body=render_template("email/off_waitlist.txt", user=user, item=item),
+        html_body=render_template("email/off_waitlist.html", user=user, item=item),
+    )

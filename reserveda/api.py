@@ -4,7 +4,7 @@
 # authentication logic)
 
 from reserveda import db, email as email_api
-from reserveda.models import Group, Item, User, Event
+from reserveda.models import Group, Item, User, Event, Waitlist
 from hashids import Hashids
 
 
@@ -87,7 +87,49 @@ def toggle_item(user_id, item_id, comment, force):
     if comment:
         event.comment = comment
     db.session.commit()
+
+    if action == "returned" and len(item.waitlists) > 0:
+        next_in_line = item.waitlists[0]
+        toggle_item(
+            next_in_line.user_id,
+            next_in_line.item_id,
+            next_in_line.comment,
+            force=False,
+        )
+        remove_from_waitlist(next_in_line.user_id, next_in_line.item_id)
+        user = User.query.filter_by(id=next_in_line.user_id).first()
+        email_api.send_off_waitlist_email(user, item)
+        db.session.commit()
+
     return True
+
+
+def add_to_waitlist(user_id, item_id, comment=None):
+    item = Item.query.filter_by(id=item_id).first()
+    waitlist = Waitlist(item_id=item_id, user_id=user_id, comment=comment)
+    event = Event(
+        action="add_to_waitlist",
+        item_id=item_id,
+        user_id=user_id,
+        group_id=item.group_id,
+    )
+    db.session.add(waitlist)
+    db.session.add(event)
+    db.session.commit()
+    return True
+
+
+def remove_from_waitlist(user_id, item_id):
+    item = Item.query.filter_by(id=item_id).first()
+    Waitlist.query.filter_by(item_id=item_id, user_id=user_id).delete()
+    event = Event(
+        action="remove_from_waitlist",
+        item_id=item_id,
+        user_id=user_id,
+        group_id=item.group_id,
+    )
+    db.session.add(event)
+    db.session.commit()
 
 
 def delete_item(user_id, item_id):

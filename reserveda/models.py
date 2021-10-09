@@ -27,6 +27,7 @@ class User(UserMixin, db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
     events = db.relationship("Event", backref="user", lazy=True)
     owned_items = db.relationship("Item", backref="user", lazy=True)
+    waitlists = db.relationship("Waitlist", backref="user", lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -59,6 +60,7 @@ class Item(db.Model):
     comment = db.Column(db.String(80), nullable=True)
     deleted = db.Column(db.Boolean, default=False, nullable=False)
     events = db.relationship("Event", backref="item", lazy=True)
+    waitlists = db.relationship("Waitlist", backref="item", lazy=True)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
 
@@ -71,3 +73,11 @@ class Event(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=False)
+
+
+class Waitlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    comment = db.Column(db.String(80), nullable=True)

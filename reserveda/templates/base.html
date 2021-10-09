@@ -1,92 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
-      integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
-      crossorigin="anonymous"
-    />
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- MomentJS -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"
-      integrity="sha512-Izh34nqeeR7/nwthfeE0SI3c8uhFSnqxV0sI9TvTcXiFJkMd6fB644O64BRq2P/LA/+7eRvCw4GmLsXksyTHBg=="
-      crossorigin="anonymous"
-    ></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+    integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous" />
 
-    <!-- FileSaver.js -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"
-      integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ=="
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href={{ url_for("static", filename="style.css") }} />
-    <title>Reserveda</title>
-  </head>
-  <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-light bg-light bg-gradient border-bottom">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="{{url_for('main')}}">Reserveda</a>
-        {% if current_user.email %}
-        <div>
-          <a
-            class="navbar-text dropdown-toggle"
-            data-toggle="dropdown"
-            id="accountDropdownLink"
-            href="#"
-          >
-            {{ current_user.email }}
-          </a>
-          <ul
-            class="dropdown-menu dropdown-menu-right"
-            aria-labelledby="accountDropdownLink"
-          >
-            <li>
-              <a class="dropdown-item" href="{{url_for('signout')}}"
-                >Sign out</a
-              >
-            </li>
-          </ul>
-          {% else %}
-          <a class="nav-link" href="{{url_for('login')}}">Log in</a>
-          {% endif %}
-        </div>
-      </div>
-    </nav>
-    <div class="container">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="rounded-lg p-2 text-center my-4 bg-light">
-            {% for message in messages %}
-            <div class="p-1">{{ message }}</div>
-            {% endfor %}
-        </div>
+  <!-- MomentJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"
+    integrity="sha512-Izh34nqeeR7/nwthfeE0SI3c8uhFSnqxV0sI9TvTcXiFJkMd6fB644O64BRq2P/LA/+7eRvCw4GmLsXksyTHBg=="
+    crossorigin="anonymous"></script>
+
+  <!-- FileSaver.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"
+    integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ=="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href={{ url_for("static", filename="style.css" ) }} />
+  <title>Reserveda</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-light bg-light bg-gradient border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{url_for('main')}}">Reserveda</a>
+      {% if current_user.email %}
+      <div>
+        <a class="navbar-text dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink" href="#">
+          {{ current_user.email }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdownLink">
+          <li>
+            <a class="dropdown-item" href="{{url_for('signout')}}">Sign out</a>
+          </li>
+        </ul>
+        {% else %}
+        <a class="nav-link" href="{{url_for('login')}}">Log in</a>
         {% endif %}
-        {% endwith %}
-      {% block content %} {% endblock %}
-    </div>
-    <nav class="navbar navbar-light bg-light mt-auto">
-      <div class="container-fluid">
-        <div class="container text-center p-2">
-          <span class="navbar-text">
-            Made by Zach Kagin | zkagin@gmail.com |
-            <a href="https://github.com/zkagin/reserveda" target="_new">
-              github.com/zkagin/reserveda
-            </a>
-          </span>
-        </div>
       </div>
-    </nav>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
-      integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="rounded-lg p-2 text-center my-4 bg-light">
+      {% for message in messages %}
+      <div class="p-1">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %} {% endblock %}
+  </div>
+  <nav class="navbar navbar-light bg-light mt-auto">
+    <div class="container-fluid">
+      <div class="container text-center p-2">
+        <span class="navbar-text">
+          Made by Zach Kagin | zkagin@gmail.com |
+          <a href="https://github.com/zkagin/reserveda" target="_new">
+            github.com/zkagin/reserveda
+          </a>
+        </span>
+      </div>
+    </div>
+  </nav>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+    integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

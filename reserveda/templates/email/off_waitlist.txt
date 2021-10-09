@@ -1,0 +1,7 @@
+Dear {{ user.email }},
+
+You're off the waitlist and up next for {{ item.name }}! It has been reserved in your name.
+
+Sincerely,
+
+The Microblog Team

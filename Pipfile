@@ -21,6 +21,8 @@ flask-migrate = "*"
 flask-talisman = "*"
 flask-mail = "*"
 pyjwt = "*"
+apscheduler = "*"
+wtforms = "==2.3.3"
 
 [requires]
 python_version = "3.8"

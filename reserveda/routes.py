@@ -168,6 +168,27 @@ def toggle_item():
     return make_response(jsonify({"success": success}), 200)
 
 
+@app.route("/add_to_waitlist", methods=["POST"])
+@login_required
+def add_to_waitlist():
+    """Turns the provided item id on or off."""
+    user_id = current_user.id
+    item_id = request.json["id"]
+    comment = request.json["comment"] if "comment" in request.json else None
+    success = api.add_to_waitlist(user_id, item_id, comment)
+    return make_response(jsonify({"success": success}), 200)
+
+
+@app.route("/remove_from_waitlist", methods=["POST"])
+@login_required
+def remove_from_waitlist():
+    """Turns the provided item id on or off."""
+    user_id = current_user.id
+    item_id = request.json["id"]
+    success = api.remove_from_waitlist(user_id, item_id)
+    return make_response(jsonify({"success": success}), 200)
+
+
 @app.route("/delete_item", methods=["POST"])
 @login_required
 def delete_item():
