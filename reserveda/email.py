@@ -2,6 +2,7 @@ from flask_mail import Message
 from reserveda import app, mail
 from flask import render_template
 from threading import Thread
+from email.utils import make_msgid
 
 
 def send_async_email(app, msg):
@@ -15,6 +16,7 @@ def send_email(subject, recipient, text_body, html_body):
         sender=app.config["MAIL_USERNAME"],
         recipients=[recipient],
     )
+    msg.msgId = make_msgid(domain="reserveda.com")
     msg.body = text_body
     msg.html = html_body
     Thread(target=send_async_email, args=(app, msg)).start()
